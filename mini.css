@@ -1,0 +1,69 @@
+body {
+    font-family: Arial;
+    background: #f4f6f8;
+    text-align: center;
+}
+
+.container {
+    max-width: 400px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ccc;
+    animation: fadeIn 1s;
+}
+
+.summary {
+    display: flex;
+    justify-content: space-between;
+}
+
+.income {
+    background: #d4edda;
+    padding: 10px;
+    width: 45%;
+}
+
+.expense {
+    background: #f8d7da;
+    padding: 10px;
+    width: 45%;
+}
+
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+}
+
+button {
+    cursor: pointer;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    padding: 10px;
+    margin: 5px;
+    background: #eee;
+    display: flex;
+    justify-content: space-between;
+    animation: slideIn 0.3s;
+}
+
+.plus { border-right: 5px solid green; }
+.minus { border-right: 5px solid red; }
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes slideIn {
+    from {transform: translateX(-50px); opacity: 0;}
+    to {transform: translateX(0); opacity: 1;}
+}
