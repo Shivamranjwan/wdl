@@ -1,0 +1,1485 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil Arial;}{\f2\fnil\fcharset0 Courier New;}{\f3\fnil\fcharset0 Calibri;}{\f4\fnil\fcharset1 Segoe UI Symbol;}{\f5\fnil\fcharset1 Cambria Math;}{\f6\fnil\fcharset1 Segoe UI Emoji;}{\f7\fnil Cambria Math;}{\f8\fnil\fcharset2 Symbol;}}
+{\colortbl ;\red31\green56\blue100;\red46\green117\blue182;\red51\green51\blue51;\red242\green242\blue242;\red85\green85\blue85;\red255\green255\blue255;\red136\green136\blue136;\red31\green78\blue121;\red0\green0\blue255;\red184\green115\blue10;\red92\green64\blue0;\red26\green26\blue26;\red0\green0\blue0;\red0\green119\blue0;\red204\green0\blue0;\red189\green215\blue238;\red179\green98\blue0;\red102\green102\blue102;\red204\green204\blue204;\red0\green255\blue255;\red235\green243\blue251;\red235\green242\blue250;\red240\green165\blue0;\red255\green248\blue225;\red240\green244\blue248;\red213\green232\blue240;\red255\green152\blue0;\red255\green243\blue205;\red232\green245\blue233;\red255\green249\blue230;\red255\green240\blue240;}
+{\*\generator Riched20 10.0.19041}{\*\mmathPr\mmathFont5\mwrapIndent1440 }\viewkind4\uc1 
+\pard\sb400\sa200\qc\cf1\b\fs24\lang9 PL/SQL Practical \f1\endash\f0  Chit 2\cf0\b0\par
+
+\pard\sa120\qc\cf2 Library Book Fine Management System\cf0\par
+
+\pard\sb280\sa160\cf1\b\fs32 1. Problem Statement\par
+
+\pard\sa120\cf0\b0\fs22 Unnamed PL/SQL code block with mandatory use of Control Structures and Exception Handling.\par
+
+\pard\sa80\par
+
+\pard\sb200\sa120\cf2\b\fs26 1.1 Schema\par
+
+\pard\sa100\cf0\fs22 Table 1: \b0 Borrower(Rollin, Name, DateofIssue, NameofBook, Status)\par
+\b Table 2: \b0 Fine(Roll_no, Date_, Amt)\par
+
+\pard\sa80\par
+
+\pard\sb200\sa120\cf2\b\fs26 1.2 Requirements\par
+
+\pard{\pntext\f8\'B7\tab}{\*\pn\pnlvlblt\pnf8\pnindent360{\pntxtb\'B7}}\fi-360\li720\sa100\cf0\b0\fs22 Accept Roll_no and Name of Book from the user.\par
+{\pntext\f8\'B7\tab}Check number of days from date of issue.\par
+{\pntext\f8\'B7\tab}Days 15\f1\endash\f0 30: Fine = Rs 5 per day.\par
+{\pntext\f8\'B7\tab}Days > 30: Rs 5/day for first 30 days + Rs 50/day for remaining days.\par
+{\pntext\f8\'B7\tab}After submitting book, status changes from I (Issued) to R (Returned).\par
+{\pntext\f8\'B7\tab}If fine > 0, insert record into Fine table.\par
+
+\pard\sa80\par
+
+\pard\sb280\sa160\cf1\b\fs32 2. Step 1 \f1\endash\f0  Create Tables\par
+
+\pard\sa120\cf0\b0\fs22 Run the following SQL on Oracle Live SQL or any Oracle environment:\par
+
+\pard\sa80\par
+
+\pard\li360\cf3\highlight4\f2\fs18 CREATE TABLE Borrower (\cf0\f0\fs22\par
+\cf3\f2\fs18     Rollin      NUMBER PRIMARY KEY,\cf0\f0\fs22\par
+\cf3\f2\fs18     Name        VARCHAR2(50),\cf0\f0\fs22\par
+\cf3\f2\fs18     DateofIssue DATE,\cf0\f0\fs22\par
+\cf3\f2\fs18     NameofBook  VARCHAR2(100),\cf0\f0\fs22\par
+\cf3\f2\fs18     Status      CHAR(1)\cf0\f0\fs22\par
+\cf3\f2\fs18 );\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18 CREATE TABLE Fine (\cf0\f0\fs22\par
+\cf3\f2\fs18     Roll_no NUMBER,\cf0\f0\fs22\par
+\cf3\f2\fs18     Date_   DATE,\cf0\f0\fs22\par
+\cf3\f2\fs18     Amt     NUMBER\cf0\f0\fs22\par
+\cf3\f2\fs18 );\cf0\f0\fs22\par
+
+\pard\sa80\highlight0\par
+
+\pard\sb280\sa160\cf1\b\fs32 3. Step 2 \f1\endash\f0  Insert Sample Data\par
+
+\pard\li360\cf3\highlight4\b0\f2\fs18 INSERT INTO Borrower VALUES (101, 'Shivam', DATE '2025-04-01', 'DBMS', 'I');\cf0\f0\fs22\par
+\cf3\f2\fs18 INSERT INTO Borrower VALUES (102, 'Riya',   DATE '2025-03-10', 'OS',   'I');\cf0\f0\fs22\par
+\cf3\f2\fs18 COMMIT;\cf0\f0\fs22\par
+
+\pard\sa80\highlight0\par
+
+\pard\sa120\cf5\i Tip: Change the DateofIssue to test different fine scenarios.\cf0\i0\par
+
+\pard\sa80\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\cf6\b\fs20 Scenario\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Date to Use\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 Less than 15 days (no fine)\f3\fs22\cell\f0\fs20 DATE '2025-04-25'\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 Between 15\f1\endash\f0 30 days\f3\fs22\cell\f0\fs20 DATE '2025-04-05'\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 More than 30 days\f3\fs22\cell\f0\fs20 DATE '2025-03-01'\f3\fs22\cell\row 
+\pard\sa80\f0\par
+
+\pard\sb280\sa160\cf1\b\fs32 4. Step 3 \f1\endash\f0  PL/SQL Block\par
+
+\pard\sa120\cf0\b0\fs22 Paste this block and run it. Oracle will prompt for Roll No and Book Name at runtime.\par
+
+\pard\sa80\par
+
+\pard\li360\cf3\highlight4\f2\fs18 DECLARE\cf0\f0\fs22\par
+\cf3\f2\fs18     v_rollin      Borrower.Rollin%TYPE      := &roll_no;\cf0\f0\fs22\par
+\cf3\f2\fs18     v_bookname    Borrower.NameofBook%TYPE  := '&book_name';\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18     v_dofissue    DATE;\cf0\f0\fs22\par
+\cf3\f2\fs18     v_days        NUMBER;\cf0\f0\fs22\par
+\cf3\f2\fs18     v_fine        NUMBER := 0;\cf0\f0\fs22\par
+\cf3\f2\fs18 BEGIN\cf0\f0\fs22\par
+\cf3\f2\fs18     -- Fetch issue date for given roll no and book\cf0\f0\fs22\par
+\cf3\f2\fs18     SELECT DateofIssue\cf0\f0\fs22\par
+\cf3\f2\fs18     INTO   v_dofissue\cf0\f0\fs22\par
+\cf3\f2\fs18     FROM   Borrower\cf0\f0\fs22\par
+\cf3\f2\fs18     WHERE  Rollin     = v_rollin\cf0\f0\fs22\par
+\cf3\f2\fs18       AND  NameofBook = v_bookname\cf0\f0\fs22\par
+\cf3\f2\fs18       AND  Status     = 'I';\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18     -- Calculate days since issue\cf0\f0\fs22\par
+\cf3\f2\fs18     v_days := TRUNC(SYSDATE) - TRUNC(v_dofissue);\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18     DBMS_OUTPUT.PUT_LINE('Days since issue: ' || v_days);\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18     -- Fine calculation\cf0\f0\fs22\par
+\cf3\f2\fs18     IF v_days BETWEEN 15 AND 30 THEN\cf0\f0\fs22\par
+\cf3\f2\fs18         v_fine := v_days * 5;\cf0\f0\fs22\par
+\cf3\f2\fs18         DBMS_OUTPUT.PUT_LINE('Fine: ' || v_days || ' days x Rs 5 = Rs ' || v_fine);\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18     ELSIF v_days > 30 THEN\cf0\f0\fs22\par
+\cf3\f2\fs18         v_fine := (30 * 5) + ((v_days - 30) * 50);\cf0\f0\fs22\par
+\cf3\f2\fs18         DBMS_OUTPUT.PUT_LINE('Fine: (30x5) + (' || (v_days-30) || 'x50) = Rs ' || v_fine);\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18     ELSE\cf0\f0\fs22\par
+\cf3\f2\fs18         DBMS_OUTPUT.PUT_LINE('No fine applicable. Days less than 15.');\cf0\f0\fs22\par
+\cf3\f2\fs18     END IF;\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18     -- Change status from I to R\cf0\f0\fs22\par
+\cf3\f2\fs18     UPDATE Borrower\cf0\f0\fs22\par
+\cf3\f2\fs18     SET    Status = 'R'\cf0\f0\fs22\par
+\cf3\f2\fs18     WHERE  Rollin     = v_rollin\cf0\f0\fs22\par
+\cf3\f2\fs18       AND  NameofBook = v_bookname;\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18     DBMS_OUTPUT.PUT_LINE('Book status updated to R (Returned).');\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18     -- Insert into Fine only if fine > 0\cf0\f0\fs22\par
+\cf3\f2\fs18     IF v_fine > 0 THEN\cf0\f0\fs22\par
+\cf3\f2\fs18         INSERT INTO Fine (Roll_no, Date_, Amt)\cf0\f0\fs22\par
+\cf3\f2\fs18         VALUES (v_rollin, SYSDATE, v_fine);\cf0\f0\fs22\par
+\cf3\f2\fs18         DBMS_OUTPUT.PUT_LINE('Fine record inserted into Fine table.');\cf0\f0\fs22\par
+\cf3\f2\fs18     END IF;\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18     COMMIT;\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18 EXCEPTION\cf0\f0\fs22\par
+\cf3\f2\fs18     WHEN NO_DATA_FOUND THEN\cf0\f0\fs22\par
+\cf3\f2\fs18         DBMS_OUTPUT.PUT_LINE('Error: No issued book found for this Roll No and Book Name.');\cf0\f0\fs22\par
+\cf3\f2\fs18     WHEN OTHERS THEN\cf0\f0\fs22\par
+\cf3\f2\fs18         ROLLBACK;\cf0\f0\fs22\par
+\cf3\f2\fs18         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);\cf0\f0\fs22\par
+\cf3\f2\fs18 END;\cf0\f0\fs22\par
+\cf3\f2\fs18 /\cf0\f0\fs22\par
+
+\pard\sa80\highlight0\par
+
+\pard\sb280\sa160\cf1\b\fs32 5. Fine Logic Summary\par
+
+\pard\sa80\cf0\b0\fs22\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\cf6\b\fs20 Days\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Fine Calculation\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 Less than 15\f3\fs22\cell\f0\fs20 No fine\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 15 to 30\f3\fs22\cell\f0\fs20 days \'d7 Rs 5 per day\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 Greater than 30\f3\fs22\cell\f0\fs20 (30 \'d7 Rs 5) + (extra days \'d7 Rs 50)\f3\fs22\cell\row 
+\pard\sa80\f0\par
+
+\pard\sa120\b Example \f1\endash\f0  if days = 35:\b0\par
+
+\pard\li360\cf3\highlight4\f2\fs18 = (30 \'d7 5) + (5 \'d7 50)\cf0\f0\fs22\par
+\cf3\f2\fs18 = 150 + 250\cf0\f0\fs22\par
+\cf3\f2\fs18 = Rs 400 total fine\cf0\f0\fs22\par
+
+\pard\sa80\highlight0\par
+
+\pard\sb280\sa160\cf1\b\fs32 6. Step 4 \f1\endash\f0  Verify Output\par
+
+\pard\li360\cf3\highlight4\b0\f2\fs18 -- Check if status changed to R\cf0\f0\fs22\par
+\cf3\f2\fs18 SELECT * FROM Borrower WHERE Rollin = 101;\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18 -- Check fine record\cf0\f0\fs22\par
+\cf3\f2\fs18 SELECT * FROM Fine;\cf0\f0\fs22\par
+\par
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\par
+\par
+\par
+\par
+\par
+\par
+
+\pard\sa60\qc\cf7\highlight0\b\fs20 DATABASE MANAGEMENT SYSTEMS\cf0\b0\fs22\par
+
+\pard\sa80\qc\cf7\fs20 Practical File\cf0\fs22\par
+
+\pard\sa200\qc\cf6\highlight8\b\fs40   CHIT 3 \f1\emdash  \f0 PL/SQL Practical  \cf0\b0\fs22\par
+
+\pard\sb300\sa120\cf8\highlight0\b\f4\fs28\u-10179?\u-9012?\f1  \f0 Aim\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Write a PL/SQL block of code using Control Structure and Exception Handling for the following requirements:\par
+
+\pard{\pntext\f8\'B7\tab}{\*\pn\pnlvlblt\pnf8\pnindent360{\pntxtb\'B7}}\fi-360\li720\sb60\sa40 Consider table Stud(Roll, Att, Status)\par
+
+\pard{\pntext\f8\'B7\tab}{\*\pn\pnlvlblt\pnf8\pnindent360{\pntxtb\'B7}}\fi-360\li720\sb40\sa40 Roll number will be entered by the user\par
+{\pntext\f8\'B7\tab}Attendance of roll no. entered by user will be checked in Stud table\par
+{\pntext\f8\'B7\tab}If Att < 75% \f5\u8594?\f1  \f0 Display "Term not granted" and set Status = 'D'\par
+
+\pard{\pntext\f8\'B7\tab}{\*\pn\pnlvlblt\pnf8\pnindent360{\pntxtb\'B7}}\fi-360\li720\sb40\sa80\lang9 If Att >= 75% \f5\u8594?\f1  \f0 Display "Term granted" and set Status = 'ND'\par
+
+\pard\sb300\sa120\cf8\b\f6\fs28\lang9\u-10179?\u-8480?\u-497?\f1  \f0 Tools Used\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\cf6\fs22 Tool / Platform\cf0\b0\f3\cell\cf6\b\f0 Details\cf0\b0\f3\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\b\f0\fs20 Online Compiler\b0\f3\fs22\cell {\f0\fs20{\field{\*\fldinst{HYPERLINK https://freesql.com }}{\fldrslt{https://freesql.com\ul0\cf0}}}}\f0\fs20  (Oracle FreeSQL)\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\b\f0\fs20 Language\b0\f3\fs22\cell\f0\fs20 PL/SQL (Oracle)\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\b\f0\fs20 Database\b0\f3\fs22\cell\f0\fs20 Oracle 21c\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\b\f0\fs20 Output Tab\b0\f3\fs22\cell\f0\fs20 DBMS Output tab in FreeSQL\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb300\sa120\cf8\b\f4\fs28\u-10179?\u-9013?\f1  \f0 Step-by-Step Procedure\par
+
+\pard\sb240\sa100\cf2\fs24 Step 1: Open FreeSQL Online Compiler\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Go to {{\field{\*\fldinst{HYPERLINK https://freesql.com }}{\fldrslt{https://freesql.com\ul0\cf0}}}}\f0\fs22  in your browser and sign in or create a free Oracle account. Click on 'Worksheet' from the top menu to open the SQL editor.\par
+\trowd\trgaph180\trrh1\trpaddl180\trpaddr180\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat24\clbrdrl\brdrw16\brdrs\brdrcf23\clbrdrt\brdrw4\brdrs\brdrcf23\clbrdrr\brdrw4\brdrs\brdrcf23\clbrdrb\brdrw4\brdrs\brdrcf23 \cellx9360 
+\pard\intbl\cf10\b\f4\fs20\u-10179?\u-9055?\f1  \f0 Note: \cf11\b0 Use freesql.com \f1\emdash  \f0 it supports PL/SQL with DBMS Output, which most other online compilers do not.\cf0\f3\fs22\cell\row 
+\pard\sb120\f0\par
+
+\pard\sb240\sa100\cf2\b\fs24 Step 2: Drop Existing Table (if any)\par
+
+\pard\sb60\sa60\cf0\b0\fs22 To avoid errors from old data, first drop the table if it already exists:\par
+
+\pard\sb80\par
+
+\pard\li360\sb40\sa40\cf12\highlight4\f2\fs20 DROP TABLE Stud;\cf0\f0\fs22\par
+
+\pard\sb60\highlight0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run \f5\u8594?\f1  \f0 You will see: Table dropped  (or 'table or view does not exist' \f7\emdash\f1  \f0 both are fine)\par
+
+\pard\sb120\lang9\par
+
+\pard\sb240\sa100\cf2\b\fs24 Step 3: Create the Stud Table\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Run the following CREATE TABLE statement:\par
+
+\pard\sb80\par
+
+\pard\li360\sb40\sa40\cf12\highlight4\f2\fs20 CREATE TABLE Stud (\cf0\f0\fs22\par
+\cf12\f2\fs20     Roll   NUMBER(5),\cf0\f0\fs22\par
+\cf12\f2\fs20     Att    NUMBER(5,2),\cf0\f0\fs22\par
+\cf12\f2\fs20     Status VARCHAR2(5)\cf0\f0\fs22\par
+\cf12\f2\fs20 );\cf0\f0\fs22\par
+
+\pard\sb60\highlight0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run \f5\u8594?\f1  \f0 You will see: Table created\par
+
+\pard\sb120\lang9\par
+
+\pard\sb240\sa100\cf2\b\fs24 Step 4: Insert Sample Data\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Insert 3 student records with different attendance values (run once only):\par
+
+\pard\sb80\par
+
+\pard\li360\sb40\sa40\cf12\highlight4\f2\fs20 INSERT INTO Stud VALUES (101, 80, NULL);\cf0\f0\fs22\par
+\cf12\f2\fs20 INSERT INTO Stud VALUES (102, 60, NULL);\cf0\f0\fs22\par
+\cf12\f2\fs20 INSERT INTO Stud VALUES (103, 75, NULL);\cf0\f0\fs22\par
+\cf12\f2\fs20 COMMIT;\cf0\f0\fs22\par
+
+\pard\sb60\highlight0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run \f5\u8594?\f1  \f0 You will see: 3 rows inserted\par
+\trowd\trgaph180\trrh1\trpaddl180\trpaddr180\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat24\clbrdrl\brdrw16\brdrs\brdrcf23\clbrdrt\brdrw4\brdrs\brdrcf23\clbrdrr\brdrw4\brdrs\brdrcf23\clbrdrb\brdrw4\brdrs\brdrcf23 \cellx9360 
+\pard\intbl\cf10\b\f4\fs20\lang9\u-10179?\u-9055?\f1  \f0 Note: \cf11\b0 IMPORTANT: Do NOT run this block more than once! Running it again will create duplicate rows which causes an error later.\cf0\f3\fs22\cell\row 
+\pard\sb120\f0\par
+
+\pard\sb240\sa100\cf2\b\fs24 Step 5: Verify the Data\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Check that exactly 3 rows are inserted:\par
+
+\pard\sb80\par
+
+\pard\li360\sb40\sa40\cf12\highlight4\f2\fs20 SELECT * FROM Stud;\cf0\f0\fs22\par
+
+\pard\sb60\highlight0\par
+
+\pard\sb60\sa60 Expected Result:\par
+
+\pard\sb80\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\b\fs20 ROLL\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 ATT\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 STATUS\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 101\f3\fs22\cell\f0\fs20 80\f3\fs22\cell\f0\fs20 (null)\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 102\f3\fs22\cell\f0\fs20 60\f3\fs22\cell\f0\fs20 (null)\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 103\f3\fs22\cell\f0\fs20 75\f3\fs22\cell\f0\fs20 (null)\f3\fs22\cell\row 
+\pard\sb120\f0\par
+
+\pard\sb240\sa100\cf2\b\fs24 Step 6: Run the PL/SQL Block\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Copy and paste the complete PL/SQL code below. Change the roll number in v_roll := 101; to test different students.\par
+
+\pard\sb80\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw16\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 SET SERVEROUTPUT ON;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 DECLARE\cf0\f0\fs22\par
+\cf12\f2\fs20     v_roll   Stud.Roll%TYPE;\cf0\f0\fs22\par
+\cf12\f2\fs20     v_att    Stud.Att%TYPE;\cf0\f0\fs22\par
+\cf12\f2\fs20 BEGIN\cf0\f0\fs22\par
+\cf12\f2\fs20     v_roll := 101;  -- Change to 101, 102, or 103\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20     SELECT Att INTO v_att\cf0\f0\fs22\par
+\cf12\f2\fs20     FROM Stud\cf0\f0\fs22\par
+\cf12\f2\fs20     WHERE Roll = v_roll;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20     IF v_att < 75 THEN\cf0\f0\fs22\par
+\cf12\f2\fs20         DBMS_OUTPUT.PUT_LINE('Term not granted');\cf0\f0\fs22\par
+\cf12\f2\fs20         UPDATE Stud SET Status = 'D' WHERE Roll = v_roll;\cf0\f0\fs22\par
+\cf12\f2\fs20     ELSE\cf0\f0\fs22\par
+\cf12\f2\fs20         DBMS_OUTPUT.PUT_LINE('Term granted');\cf0\f0\fs22\par
+\cf12\f2\fs20         UPDATE Stud SET Status = 'ND' WHERE Roll = v_roll;\cf0\f0\fs22\par
+\cf12\f2\fs20     END IF;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20     COMMIT;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 EXCEPTION\cf0\f0\fs22\par
+\cf12\f2\fs20     WHEN NO_DATA_FOUND THEN\cf0\f0\fs22\par
+\cf12\f2\fs20         DBMS_OUTPUT.PUT_LINE('Error: Roll number not found.');\cf0\f0\fs22\par
+\cf12\f2\fs20     WHEN TOO_MANY_ROWS THEN\cf0\f0\fs22\par
+\cf12\f2\fs20         DBMS_OUTPUT.PUT_LINE('Error: Duplicate roll numbers exist.');\cf0\f0\fs22\par
+\cf12\f2\fs20     WHEN OTHERS THEN\cf0\f0\fs22\par
+\cf12\f2\fs20         DBMS_OUTPUT.PUT_LINE('Unexpected error: ' || SQLERRM);\cf0\f0\fs22\par
+\cf12\f2\fs20 END;\cf0\f0\fs22\par
+\cf12\f2\fs20 /\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run \f5\u8594?\f1  \f0 Then click the 'DBMS Output' tab to see the result\par
+
+\pard\sb120\lang9\par
+
+\pard\sb240\sa100\cf2\b\fs24 Step 7: Check Output in DBMS Output Tab\par
+
+\pard\sb60\sa60\cf0\b0\fs22 After running, click on 'DBMS Output' tab at the bottom of the screen to see the printed message.\par
+
+\pard\sb80\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1440\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2880\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6840\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\b\fs20 ROLL\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 ATT\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 DBMS OUTPUT\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 STATUS SET\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat26\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1440\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2880\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6840\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\b\f0\fs20 101\b0\f3\fs22\cell\f0\fs20 80\f3\fs22\cell\f0\fs20 Term granted\f3\fs22\cell\f0\fs20 ND\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat26\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1440\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2880\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6840\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\b\f0\fs20 102\b0\f3\fs22\cell\f0\fs20 60\f3\fs22\cell\f0\fs20 Term not granted\f3\fs22\cell\f0\fs20 D\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat26\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1440\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2880\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6840\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\b\f0\fs20 103\b0\f3\fs22\cell\f0\fs20 75\f3\fs22\cell\f0\fs20 Term granted\f3\fs22\cell\f0\fs20 ND\f3\fs22\cell\row 
+\pard\sb60\f0\par
+\trowd\trgaph180\trrh1\trpaddl180\trpaddr180\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat24\clbrdrl\brdrw16\brdrs\brdrcf23\clbrdrt\brdrw4\brdrs\brdrcf23\clbrdrr\brdrw4\brdrs\brdrcf23\clbrdrb\brdrw4\brdrs\brdrcf23 \cellx9360 
+\pard\intbl\cf10\b\f4\fs20\u-10179?\u-9055?\f1  \f0 Note: \cf11\b0 Roll 103 with 75% attendance gets 'Term granted' because the condition is IF Att < 75 (strictly less than). 75 is NOT less than 75, so it passes.\cf0\f3\fs22\cell\row 
+\pard\sb120\f0\par
+
+\pard\sb240\sa100\cf2\b\fs24 Step 8: Verify Final Table Data\par
+
+\pard\sb60\sa60\cf0\b0\fs22 After running for all 3 rolls, verify the status was updated correctly:\par
+
+\pard\sb80\par
+
+\pard\li360\sb40\sa40\cf12\highlight4\f2\fs20 SELECT * FROM Stud;\cf0\f0\fs22\par
+
+\pard\sb60\sa60\highlight0 Expected Final Result:\par
+
+\pard\sb80\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\b\fs20 ROLL\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 ATT\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 STATUS\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf13\f0\fs20 101\cf0\f3\fs22\cell\cf13\f0\fs20 80\cf0\f3\fs22\cell\cf14\b\f0\fs20 ND\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf13\f0\fs20 102\cf0\f3\fs22\cell\cf13\f0\fs20 60\cf0\f3\fs22\cell\cf15\b\f0\fs20 D\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf13\f0\fs20 103\cf0\f3\fs22\cell\cf13\f0\fs20 75\cf0\f3\fs22\cell\cf14\b\f0\fs20 ND\cf0\b0\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb300\sa120\cf8\b\f6\fs28\u9888?\u-497?\f1  \f0 Exception Handling Explained\par
+\trowd\trgaph120\trrh255\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2880\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6120\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9015 
+\pard\intbl\cf6\fs20 Exception\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 When it Occurs\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Message Displayed\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2880\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9015 
+\pard\intbl\b\f2\fs20 NO_DATA_FOUND\b0\f3\fs22\cell\f0\fs20 Roll number does not exist in table\f3\fs22\cell\f0\fs20 Error: Roll number not found.\f3\fs22\cell\row\trowd\trgaph120\trrh510\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat19\clbrdrl\brdrw2\brdrs\brdrcf13\clbrdrt\brdrw2\brdrs\brdrcf13\clbrdrr\brdrw2\brdrs\brdrcf13\clbrdrb\brdrw2\brdrs\brdrcf13 \cellx2880\clcfpat13\clcbpat19\clbrdrl\brdrw2\brdrs\brdrcf13\clbrdrt\brdrw2\brdrs\brdrcf13\clbrdrr\brdrw2\brdrs\brdrcf13\clbrdrb\brdrw2\brdrs\brdrcf13 \cellx6120\clcfpat13\clcbpat19\clbrdrl\brdrw2\brdrs\brdrcf13\clbrdrt\brdrw2\brdrs\brdrcf13\clbrdrr\brdrw2\brdrs\brdrcf13\clbrdrb\brdrw2\brdrs\brdrcf13 \cellx9015 
+\pard\intbl\b\f2\fs20 TOO_MANY_ROWS\b0\f3\fs22\cell\f0\fs20 Duplicate roll numbers exist in table\f3\fs22\cell\f0\fs20 Error: Duplicate roll numbers exist.\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2880\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9015 
+\pard\intbl\b\f2\fs20 WHEN OTHERS\b0\f3\fs22\cell\f0\fs20 Any other unexpected database error\f3\fs22\cell\f0\fs20 Unexpected error: (error message)\f3\fs22\cell\row 
+\pard\li360\f0\par
+\par
+\par
+\par
+\par
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\par
+\par
+\par
+\par
+\par
+\par
+
+\pard\sa60\qc\cf7\b\fs20 DATABASE MANAGEMENT SYSTEMS\cf0\b0\fs22\par
+
+\pard\sa160\qc\cf7\fs20 Practical File\cf0\fs22\par
+\trowd\trgaph108\trrh1\trpaddl108\trpaddr108\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf2\clbrdrt\brdrw2\brdrs\brdrcf2\clbrdrr\brdrw2\brdrs\brdrcf2\clbrdrb\brdrw2\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\qc\cf6\b\fs40 CHIT 5 \f1\emdash  \f0 Cursors Practical\cf0\b0\fs22\par
+
+\pard\intbl\sb60\qc\cf16 Implicit & Explicit | Parameterized Cursor | Merge Tables\cf0\f3\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 1.  Aim\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Write a PL/SQL block of code using a Parameterized Cursor that will merge the data available in the newly created table N_RollCall with the data available in the table O_RollCall. If the data in the first table already exists in the second table then that data should be skipped.\par
+
+\pard\sb120\par
+
+\pard\sb320\sa120\cf8\b\fs28 2.  Theory \f1\emdash  \f0 Types of Cursors\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2340\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx5850\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\fs20 Type\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Description\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Example\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2340\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx5850\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Implicit Cursor\f3\fs22\cell\f0\fs20 Auto-created by Oracle for DML statements (INSERT, UPDATE, DELETE, SELECT INTO)\f3\fs22\cell\f0\fs20 SELECT ... INTO v_var FROM ...\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2340\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx5850\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Explicit Cursor\f3\fs22\cell\f0\fs20 Manually declared by programmer for multi-row queries\f3\fs22\cell\f0\fs20 CURSOR c IS SELECT ...\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2340\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx5850\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Parameterized Cursor\f3\fs22\cell\f0\fs20 Explicit cursor that accepts parameters \f1\emdash  \f0 reusable for different values\f3\fs22\cell\f0\fs20 CURSOR c(p_id NUMBER) IS SELECT ...\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 3.  Tools Used\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\fs20 Tool\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Details\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Online Compiler\f3\fs22\cell {\f0\fs20{\field{\*\fldinst{HYPERLINK https://freesql.com }}{\fldrslt{https://freesql.com\ul0\cf0}}}}\f0\fs20  (Oracle FreeSQL)\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Language\f3\fs22\cell\f0\fs20 PL/SQL (Oracle)\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Output Tab\f3\fs22\cell\f0\fs20 DBMS Output tab in FreeSQL\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 4.  Step-by-Step Procedure\par
+
+\pard\sb240\sa80\cf2\fs24 Step 1 \f1\emdash  \f0 Open FreeSQL Compiler\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Go to {{\field{\*\fldinst{HYPERLINK https://freesql.com }}{\fldrslt{https://freesql.com\ul0\cf0}}}}\f0\fs22  in your browser. Sign in or create a free Oracle account. Click Worksheet from the top menu to open the SQL editor.\par
+
+\pard\sb120\par
+\trowd\trgaph180\trrh1\trpaddl180\trpaddr180\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat24\clbrdrl\brdrw20\brdrs\brdrcf23\clbrdrt\brdrw4\brdrs\brdrcf23\clbrdrr\brdrw4\brdrs\brdrcf23\clbrdrb\brdrw4\brdrs\brdrcf23 \cellx9360 
+\pard\intbl\cf10\b\f4\fs20\u-10179?\u-9055?\f1  \f0 Tip: \cf3\b0 freesql.com supports PL/SQL with DBMS Output. Run each block separately \f1\emdash  \f0 do NOT paste everything at once.\cf0\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 2 \f1\emdash  \f0 Drop Old Tables (if they exist)\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Run this first to remove any old tables and start fresh:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 DROP TABLE N_RollCall;\cf0\f0\fs22\par
+\cf12\f2\fs20 DROP TABLE O_RollCall;\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run  \f5\u8594?\f1   \f0 You will see: Table dropped  (or 'table does not exist' \f7\emdash\f1  \f0 both are fine)\par
+
+\pard\sb160\lang9\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 3 \f1\emdash  \f0 Create Both Tables\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Run this to create N_RollCall (New) and O_RollCall (Old):\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 CREATE TABLE N_RollCall (\cf0\f0\fs22\par
+\cf12\f2\fs20     Roll    NUMBER(5),\cf0\f0\fs22\par
+\cf12\f2\fs20     Name    VARCHAR2(30),\cf0\f0\fs22\par
+\cf12\f2\fs20     Marks   NUMBER(5)\cf0\f0\fs22\par
+\cf12\f2\fs20 );\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 CREATE TABLE O_RollCall (\cf0\f0\fs22\par
+\cf12\f2\fs20     Roll    NUMBER(5),\cf0\f0\fs22\par
+\cf12\f2\fs20     Name    VARCHAR2(30),\cf0\f0\fs22\par
+\cf12\f2\fs20     Marks   NUMBER(5)\cf0\f0\fs22\par
+\cf12\f2\fs20 );\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run  \f5\u8594?\f1   \f0 Table created  (shown twice)\par
+
+\pard\sb160\lang9\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 4 \f1\emdash  \f0 Insert Data into N_RollCall (New Table)\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Insert 4 student records into the new table:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 INSERT INTO N_RollCall VALUES (101, 'Rahul', 85);\cf0\f0\fs22\par
+\cf12\f2\fs20 INSERT INTO N_RollCall VALUES (102, 'Priya', 90);\cf0\f0\fs22\par
+\cf12\f2\fs20 INSERT INTO N_RollCall VALUES (103, 'Amit',  78);\cf0\f0\fs22\par
+\cf12\f2\fs20 INSERT INTO N_RollCall VALUES (104, 'Sneha', 92);\cf0\f0\fs22\par
+\cf12\f2\fs20 COMMIT;\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run  \f5\u8594?\f1   \f0 4 rows inserted\par
+
+\pard\sb120\lang9\par
+\trowd\trgaph180\trrh1\trpaddl180\trpaddr180\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat28\clbrdrl\brdrw20\brdrs\brdrcf27\clbrdrt\brdrw4\brdrs\brdrcf27\clbrdrr\brdrw4\brdrs\brdrcf27\clbrdrb\brdrw4\brdrs\brdrcf27 \cellx9360 
+\pard\intbl\cf17\b\f6\fs20\u9888?\u-497?\f1  \f0 Warning: \cf3\b0 Run this block only ONCE. Running again creates duplicates which will cause errors in the cursor.\cf0\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 5 \f1\emdash  \f0 Insert Data into O_RollCall (Old Table)\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Insert only Roll 101 and 102 \f1\emdash  \f0 these already exist so they must be SKIPPED during merge:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 INSERT INTO O_RollCall VALUES (101, 'Rahul', 85);\cf0\f0\fs22\par
+\cf12\f2\fs20 INSERT INTO O_RollCall VALUES (102, 'Priya', 90);\cf0\f0\fs22\par
+\cf12\f2\fs20 COMMIT;\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run  \f5\u8594?\f1   \f0 2 rows inserted\par
+
+\pard\sb160\lang9\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 6 \f1\emdash  \f0 Verify Both Tables\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Run these two queries to confirm data is correct before running the cursor:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 SELECT * FROM N_RollCall;\cf0\f0\fs22\par
+\cf12\f2\fs20 SELECT * FROM O_RollCall;\cf0\f3\fs22\cell\row 
+\pard\sb80\f0\par
+
+\pard\sb60\sa60\b N_RollCall (New) \f1\emdash  \f0 should show 4 rows:\b0\par
+
+\pard\sb40\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\b\fs20 ROLL\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 NAME\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 MARKS\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 101\f3\fs22\cell\f0\fs20 Rahul\f3\fs22\cell\f0\fs20 85\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 102\f3\fs22\cell\f0\fs20 Priya\f3\fs22\cell\f0\fs20 90\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 103\f3\fs22\cell\f0\fs20 Amit\f3\fs22\cell\f0\fs20 78\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 104\f3\fs22\cell\f0\fs20 Sneha\f3\fs22\cell\f0\fs20 92\f3\fs22\cell\row 
+\pard\sb100\f0\par
+
+\pard\sb60\sa60\b O_RollCall (Old) \f1\emdash  \f0 should show 2 rows:\b0\par
+
+\pard\sb40\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\b\fs20 ROLL\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 NAME\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 MARKS\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 101\f3\fs22\cell\f0\fs20 Rahul\f3\fs22\cell\f0\fs20 85\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 102\f3\fs22\cell\f0\fs20 Priya\f3\fs22\cell\f0\fs20 90\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 7 \f1\emdash  \f0 Run the Main PL/SQL Block (Parameterized Cursor)\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Copy and paste the full PL/SQL block below and click Run:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 SET SERVEROUTPUT ON;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 DECLARE\cf0\f0\fs22\par
+\cf12\f2\fs20     -- Parameterized Cursor Declaration\cf0\f0\fs22\par
+\cf12\f2\fs20     CURSOR c_new(p_roll N_RollCall.Roll%TYPE) IS\cf0\f0\fs22\par
+\cf12\f2\fs20         SELECT Roll, Name, Marks\cf0\f0\fs22\par
+\cf12\f2\fs20         FROM N_RollCall\cf0\f0\fs22\par
+\cf12\f2\fs20         WHERE Roll = p_roll;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20     -- Variables\cf0\f0\fs22\par
+\cf12\f2\fs20     v_roll    N_RollCall.Roll%TYPE;\cf0\f0\fs22\par
+\cf12\f2\fs20     v_name    N_RollCall.Name%TYPE;\cf0\f0\fs22\par
+\cf12\f2\fs20     v_marks   N_RollCall.Marks%TYPE;\cf0\f0\fs22\par
+\cf12\f2\fs20     v_count   NUMBER;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 BEGIN\cf0\f0\fs22\par
+\cf12\f2\fs20     -- Loop through every record in N_RollCall\cf0\f0\fs22\par
+\cf12\f2\fs20     FOR rec IN (SELECT Roll FROM N_RollCall) LOOP\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20         -- Open parameterized cursor for each roll\cf0\f0\fs22\par
+\cf12\f2\fs20         OPEN c_new(rec.Roll);\cf0\f0\fs22\par
+\cf12\f2\fs20         FETCH c_new INTO v_roll, v_name, v_marks;\cf0\f0\fs22\par
+\cf12\f2\fs20         CLOSE c_new;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20         -- Check if roll already exists in O_RollCall\cf0\f0\fs22\par
+\cf12\f2\fs20         SELECT COUNT(*) INTO v_count\cf0\f0\fs22\par
+\cf12\f2\fs20         FROM O_RollCall\cf0\f0\fs22\par
+\cf12\f2\fs20         WHERE Roll = v_roll;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20         IF v_count = 0 THEN\cf0\f0\fs22\par
+\cf12\f2\fs20             -- Not found: Insert into O_RollCall\cf0\f0\fs22\par
+\cf12\f2\fs20             INSERT INTO O_RollCall VALUES (v_roll, v_name, v_marks);\cf0\f0\fs22\par
+\cf12\f2\fs20             DBMS_OUTPUT.PUT_LINE('Inserted Roll: '||v_roll||' - '||v_name);\cf0\f0\fs22\par
+\cf12\f2\fs20         ELSE\cf0\f0\fs22\par
+\cf12\f2\fs20             -- Already exists: Skip\cf0\f0\fs22\par
+\cf12\f2\fs20             DBMS_OUTPUT.PUT_LINE('Skipped Roll: '||v_roll||' - Already exists');\cf0\f0\fs22\par
+\cf12\f2\fs20         END IF;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20     END LOOP;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20     COMMIT;\cf0\f0\fs22\par
+\cf12\f2\fs20     DBMS_OUTPUT.PUT_LINE('Merge completed successfully!');\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 EXCEPTION\cf0\f0\fs22\par
+\cf12\f2\fs20     WHEN OTHERS THEN\cf0\f0\fs22\par
+\cf12\f2\fs20         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);\cf0\f0\fs22\par
+\cf12\f2\fs20 END;\cf0\f0\fs22\par
+\cf12\f2\fs20 /\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run  \f5\u8594?\f1   \f0 Then click the DBMS Output tab at the bottom to see the result\par
+
+\pard\sb160\lang9\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 8 \f1\emdash  \f0 Check DBMS Output\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Click the DBMS Output tab. Expected output:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 Skipped Roll: 101 - Already exists\cf0\f0\fs22\par
+\cf12\f2\fs20 Skipped Roll: 102 - Already exists\cf0\f0\fs22\par
+\cf12\f2\fs20 Inserted Roll: 103 - Amit\cf0\f0\fs22\par
+\cf12\f2\fs20 Inserted Roll: 104 - Sneha\cf0\f0\fs22\par
+\cf12\f2\fs20 Merge completed successfully!\cf0\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 9 \f1\emdash  \f0 Verify Final O_RollCall Table\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Run this to confirm merge was successful:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 SELECT * FROM O_RollCall;\cf0\f3\fs22\cell\row 
+\pard\sb80\f0\par
+
+\pard\sb60\sa60\b Expected Final Result \f1\emdash  \f0 O_RollCall should now have 4 rows:\b0\par
+
+\pard\sb40\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2340\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx7020\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\b\fs20 ROLL\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 NAME\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 MARKS\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 STATUS\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2340\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx7020\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 101\f3\fs22\cell\f0\fs20 Rahul\f3\fs22\cell\f0\fs20 85\f3\fs22\cell\f0\fs20 Already existed\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2340\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx7020\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 102\f3\fs22\cell\f0\fs20 Priya\f3\fs22\cell\f0\fs20 90\f3\fs22\cell\f0\fs20 Already existed\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2340\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx7020\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 103\f3\fs22\cell\f0\fs20 Amit\f3\fs22\cell\f0\fs20 78\f3\fs22\cell\f0\fs20 Newly inserted\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2340\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx7020\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 104\f3\fs22\cell\f0\fs20 Sneha\f3\fs22\cell\f0\fs20 92\f3\fs22\cell\f0\fs20 Newly inserted\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 5.  How to Add a New Roll Number\par
+
+\pard\sb60\sa60\cf0\b0\fs22 To add a new student (e.g., Roll 105), do the following:\par
+
+\pard\sb60\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step A \f1\emdash  \f0 Insert into N_RollCall\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\b0\f2\fs20 INSERT INTO N_RollCall VALUES (105, 'Pooja', 88);\cf0\f0\fs22\par
+\cf12\f2\fs20 COMMIT;\cf0\f3\fs22\cell\row 
+\pard\sb80\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step B \f1\emdash  \f0 Run the PL/SQL Block Again (Step 7)\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Run the same PL/SQL block from Step 7. It will automatically detect Roll 105 as new and insert it into O_RollCall.\par
+
+\pard\sb80\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step C \f1\emdash  \f0 Expected DBMS Output\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\b0\f2\fs20 Skipped Roll: 101 - Already exists\cf0\f0\fs22\par
+\cf12\f2\fs20 Skipped Roll: 102 - Already exists\cf0\f0\fs22\par
+\cf12\f2\fs20 Skipped Roll: 103 - Already exists\cf0\f0\fs22\par
+\cf12\f2\fs20 Skipped Roll: 104 - Already exists\cf0\f0\fs22\par
+\cf12\f2\fs20 Inserted Roll: 105 - Pooja\cf0\f0\fs22\par
+\cf12\f2\fs20 Merge completed successfully!\cf0\f3\fs22\cell\row 
+\pard\sb80\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step D \f1\emdash  \f0 Verify\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\b0\f2\fs20 SELECT * FROM N_RollCall;\cf0\f0\fs22\par
+\cf12\f2\fs20 SELECT * FROM O_RollCall;\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+\trowd\trgaph180\trrh1\trpaddl180\trpaddr180\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat24\clbrdrl\brdrw20\brdrs\brdrcf23\clbrdrt\brdrw4\brdrs\brdrcf23\clbrdrr\brdrw4\brdrs\brdrcf23\clbrdrb\brdrw4\brdrs\brdrcf23 \cellx9360 
+\pard\intbl\cf10\b\f4\fs20\u-10179?\u-9055?\f1  \f0 Note: \cf3\b0 You can add any number of new rolls. Just INSERT into N_RollCall and run the PL/SQL block. Existing records are always skipped automatically.\cf0\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 6.  How to Remove a Roll Number\par
+
+\pard\sb60\sa60\cf0\b0\fs22 To remove a student record, you can delete from either or both tables.\par
+
+\pard\sb60\par
+
+\pard\sb240\sa80\cf2\b\fs24 Option A \f1\emdash  \f0 Delete from N_RollCall only\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Removes the student from the New table (O_RollCall is NOT affected):\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 DELETE FROM N_RollCall WHERE Roll = 105;\cf0\f0\fs22\par
+\cf12\f2\fs20 COMMIT;\cf0\f3\fs22\cell\row 
+\pard\sb80\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Option B \f1\emdash  \f0 Delete from O_RollCall only\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Removes the student from the Old/merged table:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 DELETE FROM O_RollCall WHERE Roll = 105;\cf0\f0\fs22\par
+\cf12\f2\fs20 COMMIT;\cf0\f3\fs22\cell\row 
+\pard\sb80\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Option C \f1\emdash  \f0 Delete from BOTH tables\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Completely removes the student from both tables:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 DELETE FROM N_RollCall WHERE Roll = 105;\cf0\f0\fs22\par
+\cf12\f2\fs20 DELETE FROM O_RollCall WHERE Roll = 105;\cf0\f0\fs22\par
+\cf12\f2\fs20 COMMIT;\cf0\f3\fs22\cell\row 
+\pard\sb80\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Verify After Deletion\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\b0\f2\fs20 SELECT * FROM N_RollCall;\cf0\f0\fs22\par
+\cf12\f2\fs20 SELECT * FROM O_RollCall;\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+\trowd\trgaph180\trrh1\trpaddl180\trpaddr180\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat28\clbrdrl\brdrw20\brdrs\brdrcf27\clbrdrt\brdrw4\brdrs\brdrcf27\clbrdrr\brdrw4\brdrs\brdrcf27\clbrdrb\brdrw4\brdrs\brdrcf27 \cellx9360 
+\pard\intbl\cf17\b\f6\fs20\u9888?\u-497?\f1  \f0 Warning: \cf3\b0 After deleting from O_RollCall, if you run the PL/SQL block again that roll will be re-inserted from N_RollCall. Delete from N_RollCall first to prevent this.\cf0\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 7.  How to View Old and New Tables\par
+
+\pard\sb240\sa80\cf2\fs24 Option A \f1\emdash  \f0 View Separately\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\b0\f2\fs20 -- View New Table\cf0\f0\fs22\par
+\cf12\f2\fs20 SELECT * FROM N_RollCall;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 -- View Old Table\cf0\f0\fs22\par
+\cf12\f2\fs20 SELECT * FROM O_RollCall;\cf0\f3\fs22\cell\row 
+\pard\sb80\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Option B \f1\emdash  \f0 View Both Together (Side by Side)\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\b0\f2\fs20 SELECT 'N_RollCall (NEW)' AS TableName, Roll, Name, Marks FROM N_RollCall\cf0\f0\fs22\par
+\cf12\f2\fs20 UNION ALL\cf0\f0\fs22\par
+\cf12\f2\fs20 SELECT 'O_RollCall (OLD)' AS TableName, Roll, Name, Marks FROM O_RollCall\cf0\f0\fs22\par
+\cf12\f2\fs20 ORDER BY Roll, TableName;\cf0\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 8.  Exception Handling Explained\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2340\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx5850\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\fs20 Exception\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 When it Occurs\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Message Displayed\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2340\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx5850\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 WHEN OTHERS\f3\fs22\cell\f0\fs20 Any unexpected database error\f3\fs22\cell\f0\fs20 Error: (error message from SQLERRM)\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 9.  Key Concepts Explained\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\fs20 Concept\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Explanation\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Parameterized Cursor\f3\fs22\cell\f0\fs20 CURSOR c_new(p_roll ...) \f1\emdash  \f0 takes a roll number as input parameter, reusable in a loop\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 OPEN c_new(rec.Roll)\f3\fs22\cell\f0\fs20 Opens the cursor for a specific roll number\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 FETCH c_new INTO ...\f3\fs22\cell\f0\fs20 Retrieves one row from the cursor into variables\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 CLOSE c_new\f3\fs22\cell\f0\fs20 Closes the cursor to free memory\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 FOR rec IN (SELECT ...)\f3\fs22\cell\f0\fs20 Loops through all rows of N_RollCall automatically\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 SELECT COUNT(*) INTO\f3\fs22\cell\f0\fs20 Checks if roll already exists in O_RollCall\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 IF v_count = 0\f3\fs22\cell\f0\fs20 Only inserts if record is NOT already present (skip logic)\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 COMMIT\f3\fs22\cell\f0\fs20 Saves all INSERT changes permanently\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 10.  Conclusion\par
+
+\pard\sb60\sa60\cf0\b0\fs22 The PL/SQL block was successfully written and executed on Oracle FreeSQL compiler. The program correctly:\par
+
+\pard\sb40\par
+
+\pard 
+{\pntext\f0 1.\tab}{\*\pn\pnlvlbody\pnf0\pnindent360\pnstart1\pndec{\pntxta.}}
+\fi-360\li720\sb50\sa50 Created N_RollCall and O_RollCall tables with Roll, Name, and Marks columns\par
+{\pntext\f0 2.\tab}Inserted sample data into both tables\par
+{\pntext\f0 3.\tab}Used a Parameterized Cursor to loop through N_RollCall records\par
+{\pntext\f0 4.\tab}Checked each roll number against O_RollCall using COUNT(*)\par
+{\pntext\f0 5.\tab}Inserted new records and skipped duplicate records correctly\par
+
+\pard\sb50\sa50\par
+\par
+\par
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\par
+\par
+\par
+
+\pard\sa60\qc\cf7\b\fs20 DATABASE MANAGEMENT SYSTEMS\cf0\b0\fs22\par
+
+\pard\sa160\qc\cf7\fs20 Practical File\cf0\fs22\par
+\trowd\trgaph108\trrh1\trpaddl108\trpaddr108\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf2\clbrdrt\brdrw2\brdrs\brdrcf2\clbrdrr\brdrw2\brdrs\brdrcf2\clbrdrb\brdrw2\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\qc\cf6\b\fs40 CHIT 6 \f1\emdash  \f0 PL/SQL Stored Procedure\cf0\b0\fs22\par
+
+\pard\intbl\sb60\qc\cf16 proc_Grade | Student Grade Categorization\cf0\f3\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 1.  Aim\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Write a Stored Procedure named proc_Grade for the categorization of students based on marks scored in examination. The grading rules are:\par
+
+\pard\sb40\par
+
+\pard{\pntext\f8\'B7\tab}{\*\pn\pnlvlblt\pnf8\pnindent360{\pntxtb\'B7}}\fi-360\li720\sb50\sa50 Marks >= 990 and <= 1500  \f5\u8594?\f1   \f0 Distinction\par
+{\pntext\f8\'B7\tab}\lang9 Marks >= 900 and <= 989   \f5\u8594?\f1   \f0 First Class\par
+{\pntext\f8\'B7\tab}\lang9 Marks >= 825 and <= 899   \f5\u8594?\f1   \f0 Higher Second Class\par
+{\pntext\f8\'B7\tab}\lang9 Marks below 825           \f5\u8594?\f1   \f0 No Category / Fail\par
+
+\pard\sb60\lang9\par
+
+\pard\sb60\sa60 Tables Used: Stud_Marks(Name, Total_Marks)  and  Result(Roll, Name, Class)\par
+
+\pard\sb160\par
+
+\pard\sb320\sa120\cf8\b\fs28 2.  Theory \f1\emdash  \f0 Stored Procedure\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2700\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\fs20 Term\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Explanation\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2700\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Stored Procedure\f3\fs22\cell\f0\fs20 A named PL/SQL block stored in the database that can be called repeatedly\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2700\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 CREATE OR REPLACE\f3\fs22\cell\f0\fs20 Creates procedure or replaces it if it already exists\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2700\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 IN parameter\f3\fs22\cell\f0\fs20 Value passed INTO the procedure (input)\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2700\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 OUT parameter\f3\fs22\cell\f0\fs20 Value returned FROM the procedure (output)\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2700\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 ELSIF\f3\fs22\cell\f0\fs20 Used for multiple condition checks in PL/SQL (like else if)\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2700\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 EXCEPTION\f3\fs22\cell\f0\fs20 Handles unexpected errors during execution\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 3.  Grade Chart\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\fs20 Marks Range\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Category\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Condition\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 990 to 1500\f3\fs22\cell\f0\fs20 Distinction\f3\fs22\cell\f0\fs20 p_total >= 990 AND <= 1500\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 900 to 989\f3\fs22\cell\f0\fs20 First Class\f3\fs22\cell\f0\fs20 p_total >= 900 AND <= 989\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat30\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat30\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat30\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 825 to 899\f3\fs22\cell\f0\fs20 Higher Second Class\f3\fs22\cell\f0\fs20 p_total >= 825 AND <= 899\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat31\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat31\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6240\clcfpat13\clcbpat31\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Below 825\f3\fs22\cell\f0\fs20 No Category / Fail\f3\fs22\cell\f0\fs20 ELSE\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 4.  Tools Used\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\fs20 Tool\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Details\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Online Compiler\f3\fs22\cell {\f0\fs20{\field{\*\fldinst{HYPERLINK https://freesql.com }}{\fldrslt{https://freesql.com\ul0\cf0}}}}\f0\fs20  (Oracle FreeSQL)\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Language\f3\fs22\cell\f0\fs20 PL/SQL (Oracle)\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Output Tab\f3\fs22\cell\f0\fs20 DBMS Output tab in FreeSQL\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 5.  Step-by-Step Procedure\par
+
+\pard\sb240\sa80\cf2\fs24 Step 1 \f1\emdash  \f0 Open FreeSQL Compiler\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Go to {{\field{\*\fldinst{HYPERLINK https://freesql.com }}{\fldrslt{https://freesql.com\ul0\cf0}}}}\f0\fs22  and sign in. Click Worksheet from the top menu to open the SQL editor.\par
+
+\pard\sb60\par
+\trowd\trgaph180\trrh1\trpaddl180\trpaddr180\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat24\clbrdrl\brdrw20\brdrs\brdrcf23\clbrdrt\brdrw4\brdrs\brdrcf23\clbrdrr\brdrw4\brdrs\brdrcf23\clbrdrb\brdrw4\brdrs\brdrcf23 \cellx9360 
+\pard\intbl\cf10\b\f4\fs20\u-10179?\u-9055?\f1  \f0 Tip: \cf3\b0 Run each block separately. Do NOT paste all blocks together at once.\cf0\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 2 \f1\emdash  \f0 Drop Old Tables (if they exist)\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Clear any old tables to start fresh:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 DROP TABLE Stud_Marks;\cf0\f0\fs22\par
+\cf12\f2\fs20 DROP TABLE Result;\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run  \f5\u8594?\f1   \f0 Table dropped  (or 'table does not exist' \f7\emdash\f1  \f0 both are fine)\par
+
+\pard\sb160\lang9\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 3 \f1\emdash  \f0 Create Both Tables\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Create Stud_Marks and Result tables:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 CREATE TABLE Stud_Marks (\cf0\f0\fs22\par
+\cf12\f2\fs20     Name         VARCHAR2(30),\cf0\f0\fs22\par
+\cf12\f2\fs20     Total_Marks  NUMBER(5)\cf0\f0\fs22\par
+\cf12\f2\fs20 );\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 CREATE TABLE Result (\cf0\f0\fs22\par
+\cf12\f2\fs20     Roll   NUMBER(5),\cf0\f0\fs22\par
+\cf12\f2\fs20     Name   VARCHAR2(30),\cf0\f0\fs22\par
+\cf12\f2\fs20     Class  VARCHAR2(30)\cf0\f0\fs22\par
+\cf12\f2\fs20 );\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run  \f5\u8594?\f1   \f0 Table created  (shown twice)\par
+
+\pard\sb160\lang9\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 4 \f1\emdash  \f0 Insert Data into Stud_Marks\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Insert 5 student records with different marks to test all grade categories:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 INSERT INTO Stud_Marks VALUES ('Rahul', 1200);\cf0\f0\fs22\par
+\cf12\f2\fs20 INSERT INTO Stud_Marks VALUES ('Priya', 950);\cf0\f0\fs22\par
+\cf12\f2\fs20 INSERT INTO Stud_Marks VALUES ('Amit',  860);\cf0\f0\fs22\par
+\cf12\f2\fs20 INSERT INTO Stud_Marks VALUES ('Sneha', 830);\cf0\f0\fs22\par
+\cf12\f2\fs20 INSERT INTO Stud_Marks VALUES ('Pooja', 700);\cf0\f0\fs22\par
+\cf12\f2\fs20 COMMIT;\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run  \f5\u8594?\f1   \f0 5 rows inserted\par
+
+\pard\sb120\lang9\par
+\trowd\trgaph180\trrh1\trpaddl180\trpaddr180\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat28\clbrdrl\brdrw20\brdrs\brdrcf27\clbrdrt\brdrw4\brdrs\brdrcf27\clbrdrr\brdrw4\brdrs\brdrcf27\clbrdrb\brdrw4\brdrs\brdrcf27 \cellx9360 
+\pard\intbl\cf17\b\f6\fs20\u9888?\u-497?\f1  \f0 Warning: \cf3\b0 Run this INSERT block only ONCE. Running again creates duplicate rows which will cause errors.\cf0\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 5 \f1\emdash  \f0 Verify Stud_Marks Data\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Confirm all 5 students are inserted correctly:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 SELECT * FROM Stud_Marks;\cf0\f3\fs22\cell\row 
+\pard\sb80\f0\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\b\fs20 NAME\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 TOTAL_MARKS\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Rahul\f3\fs22\cell\f0\fs20 1200\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Priya\f3\fs22\cell\f0\fs20 950\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Amit\f3\fs22\cell\f0\fs20 860\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Sneha\f3\fs22\cell\f0\fs20 830\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4680\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 Pooja\f3\fs22\cell\f0\fs20 700\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 6 \f1\emdash  \f0 Create the Stored Procedure proc_Grade\par
+
+\pard\sb60\sa60\cf0\b0\fs22 This is the main stored procedure. It takes Name, Total_Marks, Roll as IN parameters and returns Class as OUT parameter:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 CREATE OR REPLACE PROCEDURE proc_Grade(\cf0\f0\fs22\par
+\cf12\f2\fs20     p_name        IN  Stud_Marks.Name%TYPE,\cf0\f0\fs22\par
+\cf12\f2\fs20     p_total       IN  Stud_Marks.Total_Marks%TYPE,\cf0\f0\fs22\par
+\cf12\f2\fs20     p_roll        IN  NUMBER,\cf0\f0\fs22\par
+\cf12\f2\fs20     p_class       OUT VARCHAR2\cf0\f0\fs22\par
+\cf12\f2\fs20 )\cf0\f0\fs22\par
+\cf12\f2\fs20 AS\cf0\f0\fs22\par
+\cf12\f2\fs20 BEGIN\cf0\f0\fs22\par
+\cf12\f2\fs20     -- Grade categorization logic\cf0\f0\fs22\par
+\cf12\f2\fs20     IF p_total <= 1500 AND p_total >= 990 THEN\cf0\f0\fs22\par
+\cf12\f2\fs20         p_class := 'Distinction';\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20     ELSIF p_total <= 989 AND p_total >= 900 THEN\cf0\f0\fs22\par
+\cf12\f2\fs20         p_class := 'First Class';\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20     ELSIF p_total <= 899 AND p_total >= 825 THEN\cf0\f0\fs22\par
+\cf12\f2\fs20         p_class := 'Higher Second Class';\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20     ELSE\cf0\f0\fs22\par
+\cf12\f2\fs20         p_class := 'No Category / Fail';\cf0\f0\fs22\par
+\cf12\f2\fs20     END IF;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20     -- Insert result into Result table\cf0\f0\fs22\par
+\cf12\f2\fs20     INSERT INTO Result VALUES (p_roll, p_name, p_class);\cf0\f0\fs22\par
+\cf12\f2\fs20     COMMIT;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 EXCEPTION\cf0\f0\fs22\par
+\cf12\f2\fs20     WHEN OTHERS THEN\cf0\f0\fs22\par
+\cf12\f2\fs20         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);\cf0\f0\fs22\par
+\cf12\f2\fs20 END proc_Grade;\cf0\f0\fs22\par
+\cf12\f2\fs20 /\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run  \f5\u8594?\f1   \f0 Procedure created\par
+
+\pard\sb120\lang9\par
+\trowd\trgaph180\trrh1\trpaddl180\trpaddr180\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat24\clbrdrl\brdrw20\brdrs\brdrcf23\clbrdrt\brdrw4\brdrs\brdrcf23\clbrdrr\brdrw4\brdrs\brdrcf23\clbrdrb\brdrw4\brdrs\brdrcf23 \cellx9360 
+\pard\intbl\cf10\b\f4\fs20\u-10179?\u-9055?\f1  \f0 Note: \cf3\b0 If you see 'Procedure created with compilation errors', run: SHOW ERRORS; to see what went wrong.\cf0\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 7 \f1\emdash  \f0 Call the Procedure using PL/SQL Block\par
+
+\pard\sb60\sa60\cf0\b0\fs22 This block loops through all students, calls proc_Grade for each one, and prints the result:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 SET SERVEROUTPUT ON;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 DECLARE\cf0\f0\fs22\par
+\cf12\f2\fs20     v_class  VARCHAR2(30);\cf0\f0\fs22\par
+\cf12\f2\fs20     v_roll   NUMBER := 1;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 BEGIN\cf0\f0\fs22\par
+\cf12\f2\fs20     -- Loop through all students in Stud_Marks\cf0\f0\fs22\par
+\cf12\f2\fs20     FOR rec IN (SELECT Name, Total_Marks FROM Stud_Marks) LOOP\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20         -- Call the stored procedure\cf0\f0\fs22\par
+\cf12\f2\fs20         proc_Grade(rec.Name, rec.Total_Marks, v_roll, v_class);\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20         -- Print result\cf0\f0\fs22\par
+\cf12\f2\fs20         DBMS_OUTPUT.PUT_LINE(\cf0\f0\fs22\par
+\cf12\f2\fs20             'Roll: ' || v_roll ||\cf0\f0\fs22\par
+\cf12\f2\fs20             ' | Name: '  || rec.Name ||\cf0\f0\fs22\par
+\cf12\f2\fs20             ' | Marks: ' || rec.Total_Marks ||\cf0\f0\fs22\par
+\cf12\f2\fs20             ' | Class: ' || v_class\cf0\f0\fs22\par
+\cf12\f2\fs20         );\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20         v_roll := v_roll + 1;\cf0\f0\fs22\par
+\cf12\f2\fs20     END LOOP;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 EXCEPTION\cf0\f0\fs22\par
+\cf12\f2\fs20     WHEN OTHERS THEN\cf0\f0\fs22\par
+\cf12\f2\fs20         DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);\cf0\f0\fs22\par
+\cf12\f2\fs20 END;\cf0\f0\fs22\par
+\cf12\f2\fs20 /\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+
+\pard\sb60\sa60\f6\u9654?\u-497?\f1  \f0 Click Run  \f5\u8594?\f1   \f0 Then click the DBMS Output tab at the bottom\par
+
+\pard\sb160\lang9\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 8 \f1\emdash  \f0 Check DBMS Output\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Click the DBMS Output tab. Expected output:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 Roll: 1 | Name: Rahul | Marks: 1200 | Class: Distinction\cf0\f0\fs22\par
+\cf12\f2\fs20 Roll: 2 | Name: Priya | Marks: 950  | Class: First Class\cf0\f0\fs22\par
+\cf12\f2\fs20 Roll: 3 | Name: Amit  | Marks: 860  | Class: Higher Second Class\cf0\f0\fs22\par
+\cf12\f2\fs20 Roll: 4 | Name: Sneha | Marks: 830  | Class: Higher Second Class\cf0\f0\fs22\par
+\cf12\f2\fs20 Roll: 5 | Name: Pooja | Marks: 700  | Class: No Category / Fail\cf0\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Step 9 \f1\emdash  \f0 Verify Result Table\par
+
+\pard\sb60\sa60\cf0\b0\fs22 Check that all grades were saved correctly in the Result table:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 SELECT * FROM Result;\cf0\f3\fs22\cell\row 
+\pard\sb80\f0\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1560\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3900\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\b\fs20 ROLL\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 NAME\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 CLASS\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1560\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3900\clcfpat13\clcbpat29\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 1\f3\fs22\cell\f0\fs20 Rahul\f3\fs22\cell\f0\fs20 Distinction\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1560\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3900\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 2\f3\fs22\cell\f0\fs20 Priya\f3\fs22\cell\f0\fs20 First Class\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat30\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1560\clcfpat13\clcbpat30\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3900\clcfpat13\clcbpat30\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 3\f3\fs22\cell\f0\fs20 Amit\f3\fs22\cell\f0\fs20 Higher Second Class\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat30\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1560\clcfpat13\clcbpat30\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3900\clcfpat13\clcbpat30\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 4\f3\fs22\cell\f0\fs20 Sneha\f3\fs22\cell\f0\fs20 Higher Second Class\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat31\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1560\clcfpat13\clcbpat31\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3900\clcfpat13\clcbpat31\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 5\f3\fs22\cell\f0\fs20 Pooja\f3\fs22\cell\f0\fs20 No Category / Fail\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 6.  Extra Operations\par
+
+\pard\sb240\sa80\cf2\fs24 Add a New Student\par
+
+\pard\sb60\sa60\cf0\b0\fs22 To add a new student, insert into Stud_Marks and run the PL/SQL call block again:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 INSERT INTO Stud_Marks VALUES ('Ravi', 920);\cf0\f0\fs22\par
+\cf12\f2\fs20 COMMIT;\cf0\f3\fs22\cell\row 
+\pard\sb60\f0\par
+\trowd\trgaph180\trrh1\trpaddl180\trpaddr180\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat24\clbrdrl\brdrw20\brdrs\brdrcf23\clbrdrt\brdrw4\brdrs\brdrcf23\clbrdrr\brdrw4\brdrs\brdrcf23\clbrdrb\brdrw4\brdrs\brdrcf23 \cellx9360 
+\pard\intbl\cf10\b\f4\fs20\u-10179?\u-9055?\f1  \f0 Note: \cf3\b0 Before running the PL/SQL block again, DELETE existing Result rows to avoid duplicates: DELETE FROM Result; COMMIT;\cf0\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Remove a Student\par
+
+\pard\sb60\sa60\cf0\b0\fs22 To remove a student from Stud_Marks and Result tables:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 -- Remove from Stud_Marks\cf0\f0\fs22\par
+\cf12\f2\fs20 DELETE FROM Stud_Marks WHERE Name = 'Pooja';\cf0\f0\fs22\par
+\cf12\f2\fs20 COMMIT;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 -- Remove from Result\cf0\f0\fs22\par
+\cf12\f2\fs20 DELETE FROM Result WHERE Name = 'Pooja';\cf0\f0\fs22\par
+\cf12\f2\fs20 COMMIT;\cf0\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 View Both Tables\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\b0\f2\fs20 -- View Stud_Marks\cf0\f0\fs22\par
+\cf12\f2\fs20 SELECT * FROM Stud_Marks;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 -- View Result\cf0\f0\fs22\par
+\cf12\f2\fs20 SELECT * FROM Result;\cf0\f3\fs22\cell\row 
+\pard\sb160\f0\par
+
+\pard\sb240\sa80\cf2\b\fs24 Re-run Grade for All Students (Fresh Start)\par
+
+\pard\sb60\sa60\cf0\b0\fs22 If you want to re-run the procedure cleanly for all students:\par
+
+\pard\sb60\par
+\trowd\trgaph200\trrh1\trpaddl200\trpaddr200\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat25\clbrdrl\brdrw20\brdrs\brdrcf2\clbrdrt\brdrw8\brdrs\brdrcf2\clbrdrr\brdrw8\brdrs\brdrcf2\clbrdrb\brdrw8\brdrs\brdrcf2 \cellx9360 
+\pard\intbl\sb20\sa20\cf12\f2\fs20 -- Step 1: Clear Result table\cf0\f0\fs22\par
+\cf12\f2\fs20 DELETE FROM Result;\cf0\f0\fs22\par
+\cf12\f2\fs20 COMMIT;\cf0\f0\fs22\par
+\cf12\f2\fs20  \cf0\f0\fs22\par
+\cf12\f2\fs20 -- Step 2: Run the PL/SQL call block again (Block 7)\cf0\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 7.  Exception Handling\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2700\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6030\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\fs20 Exception\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 When it Occurs\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Message\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2700\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6030\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 WHEN OTHERS\f3\fs22\cell\f0\fs20 Any unexpected Oracle database error\f3\fs22\cell\f0\fs20 Error: (SQLERRM message)\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 8.  Key Concepts Explained\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat8\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\cf6\fs20 Concept\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Explanation\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 CREATE OR REPLACE PROCEDURE\f3\fs22\cell\f0\fs20 Creates a stored procedure \f1\emdash  \f0 saved permanently in the database\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 IN parameter\f3\fs22\cell\f0\fs20 Input value sent to procedure \f1\emdash  \f0 cannot be changed inside procedure\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 OUT parameter\f3\fs22\cell\f0\fs20 Output value returned by procedure \f1\emdash  \f0 set inside the procedure\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 IF / ELSIF / ELSE\f3\fs22\cell\f0\fs20 Multi-condition branching to assign correct grade category\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 FOR rec IN (...) LOOP\f3\fs22\cell\f0\fs20 Loops through each student row automatically\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 proc_Grade(...)\f3\fs22\cell\f0\fs20 Calling the stored procedure with actual values\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat22\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 DBMS_OUTPUT.PUT_LINE\f3\fs22\cell\f0\fs20 Prints output message to DBMS Output tab\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx3120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\qc\f0\fs20 COMMIT\f3\fs22\cell\f0\fs20 Saves all inserted rows permanently to Result table\f3\fs22\cell\row 
+\pard\sb200\f0\par
+
+\pard\sb320\sa120\cf8\b\fs28 9.  Conclusion\par
+
+\pard\sb60\sa60\cf0\b0\fs22 The PL/SQL Stored Procedure proc_Grade was successfully created and executed on Oracle FreeSQL compiler. The program correctly:\par
+
+\pard\sb40\par
+
+\pard 
+{\pntext\f0 1.\tab}{\*\pn\pnlvlbody\pnf0\pnindent360\pnstart1\pndec{\pntxta.}}
+\fi-360\li720\sb50\sa50 Created Stud_Marks and Result tables\par
+{\pntext\f0 2.\tab}Inserted student data with varying marks\par
+{\pntext\f0 3.\tab}Created a stored procedure proc_Grade with IN and OUT parameters\par
+{\pntext\f0 4.\tab}Used IF-ELSIF-ELSE to categorize students into Distinction, First Class, Higher Second Class, or No Category\par
+{\pntext\f0 5.\tab}Called the procedure in a PL/SQL block using a FOR loop\par
+{\pntext\f0 6.\tab}Stored the grade results in the Result table\par
+{\pntext\f0 7.\tab}Handled exceptions using WHEN OTHERS\par
+{\pntext\f0 8.\tab}Demonstrated how to add and remove roll numbers from both tables\par
+
+\pard\sb50\sa50\par
+\par
+\par
+\par
+
+\pard\li360 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\par
+\par
+\par
+\par
+
+\pard\sb400\sa200\qc\cf1\b\fs44 PL/SQL Practical \f1\endash  \f0 Chit 10\cf0\b0\fs22\par
+
+\pard\sa120\qc\cf2\fs28 Database Trigger \f1\endash  \f0 Library Audit System\cf0\fs22\par
+
+\pard\sa600\qc\cf18\i Oracle PL/SQL | Row Level Trigger | Before Trigger | Audit Trail\cf0\i0\par
+
+\pard\sa80\par
+\par
+
+\pard\sb280\sa160\cf1\b\fs32 1. Problem Statement\par
+
+\pard\sa120\cf0\b0\fs22 Database Trigger (Row Level, Before Trigger). Write a database trigger on the Library table. The system should keep track of records that are being updated or deleted. The old values of updated or deleted records should be added into the Library_Audit table.\par
+
+\pard\sa80\par
+
+\pard\sb200\sa120\cf2\b\fs26 1.1 Schema\par
+
+\pard\sa100\cf0\fs22 Main Table: \b0 Library(Book_id, Book_name, Author, Quantity, Price)\par
+\b Audit Table: \b0 Library_Audit(Book_id, Book_name, Author, Quantity, Price, Operation, Changed_on)\par
+
+\pard\sa80\par
+
+\pard\sb200\sa120\cf2\b\fs26 1.2 Requirements\par
+
+\pard{\pntext\f8\'B7\tab}{\*\pn\pnlvlblt\pnf8\pnindent360{\pntxtb\'B7}}\fi-360\li720\sa100\cf0\b0\fs22 Create a BEFORE trigger on the Library table.\par
+{\pntext\f8\'B7\tab}Trigger fires on UPDATE or DELETE operations \f1\emdash  \f0 row level.\par
+{\pntext\f8\'B7\tab}Before any update or delete, the OLD values are saved into Library_Audit.\par
+{\pntext\f8\'B7\tab}The Operation column in audit table stores 'UPDATE' or 'DELETE'.\par
+{\pntext\f8\'B7\tab}Changed_on column stores the timestamp of when the change happened.\par
+
+\pard\sa80\par
+
+\pard\sb280\sa160\cf1\b\fs32 2. Concept Overview\par
+
+\pard\sa80\cf0\b0\fs22\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2480\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\cf6\b\fs20 Term\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Explanation\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2480\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 Trigger\f3\fs22\cell\f0\fs20 A stored PL/SQL block that fires automatically on DML events (INSERT, UPDATE, DELETE).\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2480\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 Row Level Trigger\f3\fs22\cell\f0\fs20 Fires once for each row affected by the DML operation. Uses FOR EACH ROW clause.\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2480\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 Before Trigger\f3\fs22\cell\f0\fs20 Fires before the actual DML operation executes on the table.\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2480\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 :OLD\f3\fs22\cell\f0\fs20 Refers to the original value of the column before UPDATE or DELETE.\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2480\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 :NEW\f3\fs22\cell\f0\fs20 Refers to the new value being set during INSERT or UPDATE.\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx2480\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 Audit Trail\f3\fs22\cell\f0\fs20 A log of all changes made to a table, stored in a separate audit table.\f3\fs22\cell\row 
+\pard\sa80\f0\par
+
+\pard\sb280\sa160\cf1\b\fs32 3. Step 1 \f1\endash  \f0 Create Tables\par
+
+\pard\sa120\cf0\b0\fs22 Run both CREATE statements before writing the trigger.\par
+
+\pard\sa80\par
+
+\pard\li360\cf3\highlight4\f2\fs18 -- Main Library table\cf0\f0\fs22\par
+\cf3\f2\fs18 CREATE TABLE Library (\cf0\f0\fs22\par
+\cf3\f2\fs18     Book_id    NUMBER PRIMARY KEY,\cf0\f0\fs22\par
+\cf3\f2\fs18     Book_name  VARCHAR2(100),\cf0\f0\fs22\par
+\cf3\f2\fs18     Author     VARCHAR2(100),\cf0\f0\fs22\par
+\cf3\f2\fs18     Quantity   NUMBER,\cf0\f0\fs22\par
+\cf3\f2\fs18     Price      NUMBER\cf0\f0\fs22\par
+\cf3\f2\fs18 );\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18 -- Audit table to store old values\cf0\f0\fs22\par
+\cf3\f2\fs18 CREATE TABLE Library_Audit (\cf0\f0\fs22\par
+\cf3\f2\fs18     Book_id    NUMBER,\cf0\f0\fs22\par
+\cf3\f2\fs18     Book_name  VARCHAR2(100),\cf0\f0\fs22\par
+\cf3\f2\fs18     Author     VARCHAR2(100),\cf0\f0\fs22\par
+\cf3\f2\fs18     Quantity   NUMBER,\cf0\f0\fs22\par
+\cf3\f2\fs18     Price      NUMBER,\cf0\f0\fs22\par
+\cf3\f2\fs18     Operation  VARCHAR2(10),\cf0\f0\fs22\par
+\cf3\f2\fs18     Changed_on DATE\cf0\f0\fs22\par
+\cf3\f2\fs18 );\cf0\f0\fs22\par
+
+\pard\sa80\highlight0\par
+
+\pard\sb280\sa160\cf1\b\fs32 4. Step 2 \f1\endash  \f0 Insert Sample Data\par
+
+\pard\li360\cf3\highlight4\b0\f2\fs18 INSERT INTO Library VALUES (1, 'DBMS',              'Ramakrishnan',  10, 450);\cf0\f0\fs22\par
+\cf3\f2\fs18 INSERT INTO Library VALUES (2, 'Operating Systems', 'Galvin',         5, 600);\cf0\f0\fs22\par
+\cf3\f2\fs18 INSERT INTO Library VALUES (3, 'Computer Networks', 'Forouzan',       8, 520);\cf0\f0\fs22\par
+\cf3\f2\fs18 INSERT INTO Library VALUES (4, 'Data Structures',   'Lipschutz',     12, 380);\cf0\f0\fs22\par
+\cf3\f2\fs18 COMMIT;\cf0\f0\fs22\par
+
+\pard\sa80\highlight0\par
+
+\pard\sb280\sa160\cf1\b\fs32 5. Step 3 \f1\endash  \f0 Create the BEFORE Trigger\par
+
+\pard\sa120\cf0\b0\fs22 This trigger fires BEFORE every UPDATE or DELETE on the Library table and saves the old row into Library_Audit.\par
+
+\pard\sa80\par
+
+\pard\li360\cf3\highlight4\f2\fs18 CREATE OR REPLACE TRIGGER trg_library_audit\cf0\f0\fs22\par
+\cf3\f2\fs18 BEFORE UPDATE OR DELETE\cf0\f0\fs22\par
+\cf3\f2\fs18 ON Library\cf0\f0\fs22\par
+\cf3\f2\fs18 FOR EACH ROW\cf0\f0\fs22\par
+\cf3\f2\fs18 DECLARE\cf0\f0\fs22\par
+\cf3\f2\fs18     v_operation VARCHAR2(10);\cf0\f0\fs22\par
+\cf3\f2\fs18 BEGIN\cf0\f0\fs22\par
+\cf3\f2\fs18     -- Identify which operation is happening\cf0\f0\fs22\par
+\cf3\f2\fs18     IF DELETING THEN\cf0\f0\fs22\par
+\cf3\f2\fs18         v_operation := 'DELETE';\cf0\f0\fs22\par
+\cf3\f2\fs18     ELSIF UPDATING THEN\cf0\f0\fs22\par
+\cf3\f2\fs18         v_operation := 'UPDATE';\cf0\f0\fs22\par
+\cf3\f2\fs18     END IF;\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18     -- Save OLD values into audit table before change happens\cf0\f0\fs22\par
+\cf3\f2\fs18     INSERT INTO Library_Audit (\cf0\f0\fs22\par
+\cf3\f2\fs18         Book_id, Book_name, Author,\cf0\f0\fs22\par
+\cf3\f2\fs18         Quantity, Price, Operation, Changed_on\cf0\f0\fs22\par
+\cf3\f2\fs18     ) VALUES (\cf0\f0\fs22\par
+\cf3\f2\fs18         :OLD.Book_id,\cf0\f0\fs22\par
+\cf3\f2\fs18         :OLD.Book_name,\cf0\f0\fs22\par
+\cf3\f2\fs18         :OLD.Author,\cf0\f0\fs22\par
+\cf3\f2\fs18         :OLD.Quantity,\cf0\f0\fs22\par
+\cf3\f2\fs18         :OLD.Price,\cf0\f0\fs22\par
+\cf3\f2\fs18         v_operation,\cf0\f0\fs22\par
+\cf3\f2\fs18         SYSDATE\cf0\f0\fs22\par
+\cf3\f2\fs18     );\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18     DBMS_OUTPUT.PUT_LINE('Audit log saved for Book_id: ' || :OLD.Book_id);\cf0\f0\fs22\par
+\cf3\f2\fs18     DBMS_OUTPUT.PUT_LINE('Operation: ' || v_operation);\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18 EXCEPTION\cf0\f0\fs22\par
+\cf3\f2\fs18     WHEN OTHERS THEN\cf0\f0\fs22\par
+\cf3\f2\fs18         DBMS_OUTPUT.PUT_LINE('Trigger error: ' || SQLERRM);\cf0\f0\fs22\par
+\cf3\f2\fs18 END;\cf0\f0\fs22\par
+\cf3\f2\fs18 /\cf0\f0\fs22\par
+
+\pard\sa80\highlight0\par
+
+\pard\sb280\sa160\cf1\b\fs32 6. Step 4 \f1\endash  \f0 Test the Trigger\par
+
+\pard\sa80\cf0\b0\fs22\par
+
+\pard\sb200\sa120\cf2\b\fs26 6.1 Test UPDATE\par
+
+\pard\sa120\cf0\b0\fs22 Update the price of Book_id = 1. Trigger will save old price to audit table before updating.\par
+
+\pard\sa80\par
+
+\pard\li360\cf3\highlight4\f2\fs18 UPDATE Library\cf0\f0\fs22\par
+\cf3\f2\fs18 SET    Price = 500\cf0\f0\fs22\par
+\cf3\f2\fs18 WHERE  Book_id = 1;\cf0\f0\fs22\par
+\cf3\f2\fs18 COMMIT;\cf0\f0\fs22\par
+
+\pard\sa80\highlight0\par
+
+\pard\sb200\sa120\cf2\b\fs26 6.2 Test DELETE\par
+
+\pard\sa120\cf0\b0\fs22 Delete Book_id = 4. Trigger will save entire old row to audit table before deleting.\par
+
+\pard\sa80\par
+
+\pard\li360\cf3\highlight4\f2\fs18 DELETE FROM Library\cf0\f0\fs22\par
+\cf3\f2\fs18 WHERE  Book_id = 4;\cf0\f0\fs22\par
+\cf3\f2\fs18 COMMIT;\cf0\f0\fs22\par
+
+\pard\sa80\highlight0\par
+
+\pard\sb280\sa160\cf1\b\fs32 7. Step 5 \f1\endash  \f0 Verify Output\par
+
+\pard\li360\cf3\highlight4\b0\f2\fs18 -- Check current Library table\cf0\f0\fs22\par
+\cf3\f2\fs18 SELECT * FROM Library;\cf0\f0\fs22\par
+\par
+\cf3\f2\fs18 -- Check audit trail (old values saved by trigger)\cf0\f0\fs22\par
+\cf3\f2\fs18 SELECT * FROM Library_Audit;\cf0\f0\fs22\par
+
+\pard\sa80\highlight0\par
+
+\pard\sa120\b Expected output in Library_Audit after both tests:\b0\par
+
+\pard\sa80\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1240\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4120\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6600\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx8280\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx10360 
+\pard\intbl\cf6\b\fs20 Book_id\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Book_name\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Old Price / Qty\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Operation\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 Changed_on\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1240\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4120\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6600\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx8280\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx10360 
+\pard\intbl\f0\fs20 1\f3\fs22\cell\f0\fs20 DBMS\f3\fs22\cell\f0\fs20 Price = 450\f3\fs22\cell\f0\fs20 UPDATE\f3\fs22\cell\f0\fs20 SYSDATE\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1240\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx4120\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx6600\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx8280\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx10360 
+\pard\intbl\f0\fs20 4\f3\fs22\cell\f0\fs20 Data Structures\f3\fs22\cell\f0\fs20 Qty = 12, Price = 380\f3\fs22\cell\f0\fs20 DELETE\f3\fs22\cell\f0\fs20 SYSDATE\f3\fs22\cell\row 
+\pard\sa80\f0\par
+
+\pard\sb280\sa160\cf1\b\fs32 8. How the Trigger Works (Flow)\par
+
+\pard\sa80\cf0\b0\fs22\par
+\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1240\clcfpat13\clcbpat1\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\cf6\b\fs20 Step\cf0\b0\f3\fs22\cell\cf6\b\f0\fs20 What Happens\cf0\b0\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1240\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 1\f3\fs22\cell\f0\fs20 User fires an UPDATE or DELETE on Library table.\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1240\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 2\f3\fs22\cell\f0\fs20 BEFORE trigger (trg_library_audit) activates for each affected row.\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1240\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 3\f3\fs22\cell\f0\fs20 :OLD values (original data) are captured before any change.\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1240\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 4\f3\fs22\cell\f0\fs20 Old values + operation type + timestamp are inserted into Library_Audit.\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1240\clcfpat13\clcbpat21\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 5\f3\fs22\cell\f0\fs20 Actual UPDATE or DELETE completes on Library table.\f3\fs22\cell\row\trowd\trgaph120\trrh1\trpaddl120\trpaddr120\trpaddfl3\trpaddfr3
+\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx1240\clcfpat13\clcbpat6\clbrdrl\brdrw2\brdrs\brdrcf19\clbrdrt\brdrw2\brdrs\brdrcf19\clbrdrr\brdrw2\brdrs\brdrcf19\clbrdrb\brdrw2\brdrs\brdrcf19 \cellx9360 
+\pard\intbl\f0\fs20 6\f3\fs22\cell\f0\fs20 Audit table now holds a full history of all changes.\f3\fs22\cell\row 
+\pard\sa80\f0\par
+
+\pard\sb280\sa160\cf1\b\fs32 9. Key Points for Exam\par
+
+\pard{\pntext\f8\'B7\tab}{\*\pn\pnlvlblt\pnf8\pnindent360{\pntxtb\'B7}}\fi-360\li720\sa100\cf0\b0\fs22 BEFORE trigger fires before the actual DML \f1\emdash  \f0 so :OLD values are still available.\par
+{\pntext\f8\'B7\tab}FOR EACH ROW makes it a row-level trigger \f1\emdash  \f0 fires once per affected row.\par
+{\pntext\f8\'B7\tab}DELETING and UPDATING are Oracle conditional predicates to identify the operation.\par
+{\pntext\f8\'B7\tab}:OLD.column gives value before the change; :NEW.column gives the incoming value.\par
+{\pntext\f8\'B7\tab}Exception handling with WHEN OTHERS ensures the trigger does not silently fail.\par
+{\pntext\f8\'B7\tab}No COMMIT inside the trigger \f1\emdash  \f0 the outer DML transaction handles it.\par
+
+\pard\sa80\par
+
+\pard\sb280\sa160\cf1\b\fs32 10. Online Compiler\par
+
+\pard\sa120\cf0\b0\fs22 Use Oracle Live SQL (free account required):\par
+{\b{\field{\*\fldinst{HYPERLINK https://livesql.oracle.com }}{\fldrslt{https://livesql.oracle.com\ul0\cf0}}}}\f0\fs22\par
+
+\pard\sa80\par
+
+\pard\sa120\i Run in order: Create Tables > Insert Data > Create Trigger > Test UPDATE/DELETE > Verify.\i0\par
+
+\pard\sa80\par
+
+\pard\li360\par
+\par
+\par
+\par
+\par
+\par
+\par
+}
+ 
